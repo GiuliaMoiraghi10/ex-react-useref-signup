@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 
 // variabili con i caratteri disponibili
 const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -8,12 +8,16 @@ const symbols = "!@#$%^&*()-_=+[]{}|;:'\\,.<>?/`~";
 function App() {
 
   // input controllati -- potrei importare tutti gli stati insieme anche con formData
-  const [fullname, setFullName] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [specilization, setSpecialization] = useState('')
-  const [yearsOfExperience, setYearsOfExperience] = useState('')
   const [description, setDescription] = useState('')
+
+
+  // input non controllati - uso useRef
+  const fullnameRef = useRef()
+  const yearsOfExperienceRef = useRef()
+  const specilizationRef = useRef()
+
 
   // creo variabile che viene ricalcolata solo quando cambia username - uso useMemo a cui passo come dipendenza username
   const usernameValid = useMemo(() => {
@@ -48,6 +52,12 @@ function App() {
   // funzione per impedire refresh della pagina + controlli
   const handleSubmit = e => {
     e.preventDefault()
+
+    // valori non controllati
+    const fullname = fullnameRef.current.value
+    const specilization = specilizationRef.current.value
+    const yearsOfExperience = yearsOfExperienceRef.current.value
+
     if ( // se uno o tutti questi campi non ci sono, esce alert con errore, altrimenti li stampa in console
       !fullname.trim() ||
       !username.trim() ||
@@ -82,8 +92,7 @@ function App() {
           <label htmlFor=""><h4>Nome Completo</h4></label>
           <input
             type="text"
-            value={fullname}
-            onChange={(e) => setFullName(e.target.value)}
+            ref={fullnameRef}
           />
           <label htmlFor=""><h4>Username</h4></label>
           <input
@@ -109,8 +118,7 @@ function App() {
           )}
           <label htmlFor=""><h4>Specializzazione</h4></label>
           <select
-            value={specilization}
-            onChange={(e) => setSpecialization(e.target.value)}
+            ref={specilizationRef}
           >
             <option>Seleziona</option>
             <option value="Full Stack">Full Stack</option>
@@ -120,8 +128,7 @@ function App() {
           <label htmlFor=""><h4>Anni di esperienza</h4></label>
           <input
             type="number"
-            value={yearsOfExperience}
-            onChange={(e) => setYearsOfExperience(e.target.value)}
+            ref={yearsOfExperienceRef}
           />
           <label htmlFor=""><h4>Descrizione</h4></label>
           <textarea
